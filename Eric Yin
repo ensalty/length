@@ -78,6 +78,14 @@ my $max_item=0;
                     {
                          $final_result -= $re_cal[$max_item+1]*$yu;next;
                     }
+                    if($calu[$y-2] eq '*')            
+                    {
+                         $final_result *= $re_cal[$max_item+1]*$yu;next;
+                    }
+                    if($calu[$y-2] eq '\')
+                    {
+                         $final_result \= $re_cal[$max_item+1]*$yu;next;
+                    }
                     else
                     {
                          $final_result = $re_cal[$max_item+1]*$yu;
