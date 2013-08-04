@@ -1,0 +1,93 @@
+#!/usr/bin/perl
+open FH,'<.\input.txt';
+print "eric.z.yin\@ericsson.com"."\n";
+print "\n";
+my @arr=<FH>;
+my $row;
+my @set;
+my @result;
+my @cal;
+my @re_cal;
+my $max=0;
+my $max_item=0;
+    foreach $row(@arr)
+{
+    if($row=~/=/)
+    {
+        push @set,$row;next;
+    }
+    unless($row=~/^\s*$/) #space match
+    {
+        push @result,$row; 
+    }
+        
+}
+    foreach my$item (@set)
+    {
+        #@cal = split " ",$item;  
+        #push @re_cal,@cal;
+        if($item =~ /1 (\S+) = (\S+) m/)
+        {
+            
+            @cal = ($1,$2);
+            push @re_cal, @cal;
+#         print $1."  ".$2."\n";
+        }
+    }
+    my @calu;
+    my $cal=0;
+    my $yu;
+    foreach my$item (@result)#对行遍历
+    {
+        @calu = split " ",$item;
+        for(my $y=1;$y<=$#calu;$y+=3) #对等式进行遍历
+       {
+        $max = 0;
+        $max_item = 0;
+        $yu =  $calu[$y-1];
+        $cal = $calu[$y];
+    
+            for(my$i=0;$i<$#re_cal;$i+=2)#选取相似匹配的单词 单数单词 与复数单词 匹配 通过比较每个单词选出匹配度最高的单词
+            {
+               #if($2 eq $re_cal[$i])
+                    ($re_cal[$i]->[0])=0;
+                    my @er1 = split "",$cal;
+                    my @er2 = split "",$re_cal[$i];
+                    for(my$j=0;$j<$#er1;$j++)
+                    {
+                        if($er1[$j] eq $er2[$j])
+                        {
+                            ($re_cal[$i]->[0])++;
+                        }
+                    }
+                    if($max < $re_cal[$i]->[0])
+                    {
+                        $max = $re_cal[$i]->[0];
+                        $max_item = $i;
+                        
+                    }
+                   
+                    
+                
+            }
+                    if($calu[$y-2] eq '+')            
+                    {
+                         $final_result += $re_cal[$max_item+1]*$yu;next;
+                    }
+                    if($calu[$y-2] eq '-')
+                    {
+                         $final_result -= $re_cal[$max_item+1]*$yu;next;
+                    }
+                    else
+                    {
+                         $final_result = $re_cal[$max_item+1]*$yu;
+                    }                        
+        }
+        printf "%.2f",$final_result;
+        print " "."m";
+        print "\n";
+        $max=0;
+        $max_item=0;
+    }
+    
+    
